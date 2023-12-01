@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+
+# Virtual Environment
+.venv/
+venv/
+env/
+ENV/
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Miscellaneous
+*.bak
+*.swp
+.DS_Store
+.env
