@@ -1,7 +1,6 @@
 import click
+from urllib.parse import urlparse, parse_qs
 from youtube_transcript_api import YouTubeTranscriptApi
-
-"https://youtu.be/69bH4IHZivs"
 
 
 @click.group()
@@ -49,7 +48,18 @@ def summarize_transcript(transcript):
 
 
 def url_to_id(url):
-    return url.split("/")[-1]
+    """Extract the video id from a youtube url.
+
+    There are two types of youtube urls:
+    - https://www.youtube.com/watch?v=dQw4w9WgXcQ&other=params
+    - https://youtu.be/dQw4w9WgXcQ?other=params
+    """
+    parsed_url = urlparse(url)
+    if parsed_url.hostname == "youtu.be":
+        return parsed_url.path[1:]
+    elif parsed_url.hostname in ["www.youtube.com", "youtube.com"]:
+        return parse_qs(parsed_url.query).get("v", [None])[0]
+    return None
 
 
 def format_time(seconds: float) -> str:
