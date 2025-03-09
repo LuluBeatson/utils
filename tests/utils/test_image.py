@@ -43,9 +43,8 @@ def test_grid_command(runner, test_dir, sample_images):
         - Plus final border = 203px total height
     """
     output_path = str(test_dir / "output")
-    result = runner.invoke(
-        image, ["grid", "--columns", "2", "--output", output_path, str(test_dir)]
-    )
+    args = ["grid", "--columns", "2", "--output", output_path, str(test_dir)]
+    result = runner.invoke(image, args)
 
     assert result.exit_code == 0
     assert os.path.exists(output_path + ".png")

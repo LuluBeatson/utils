@@ -1,4 +1,3 @@
-import os
 import pytest
 from click.testing import CliRunner
 
@@ -17,34 +16,24 @@ def test_dir(tmp_path):
 
 @pytest.fixture
 def sample_images(test_dir):
-    """Create sample PNG images for testing."""
+    """Create sample PNG images for testing.
+
+    Creates three test images:
+    - Size: 100x100 pixels each
+    - Color: Grayscale (rgb(0,0,0) to rgb(100,100,100))
+    - Names: test_image_0.png through test_image_2.png
+    """
     from PIL import Image
 
-    # Create three sample images
     images = []
     for i in range(3):
-        img = Image.new("RGB", (100, 100), color=f"rgb({i*50}, {i*50}, {i*50})")
+        color = f"rgb({i*50}, {i*50}, {i*50})"
+        img = Image.new("RGB", (100, 100), color=color)
         path = test_dir / f"test_image_{i}.png"
         img.save(path)
         images.append(path)
 
     return images
-
-
-@pytest.fixture
-def mock_openai_response(monkeypatch):
-    """Mock OpenAI API responses."""
-
-    class MockResponse:
-        def __init__(self):
-            self.data = [type("obj", (), {"url": "http://example.com/image.png"})]
-
-    def mock_generate(*args, **kwargs):
-        return MockResponse()
-
-    from openai import OpenAI
-
-    monkeypatch.setattr(OpenAI, "images", type("obj", (), {"generate": mock_generate}))
 
 
 @pytest.fixture
