@@ -4,7 +4,13 @@ from youtube_transcript_api import YouTubeTranscriptApi
 "https://youtu.be/69bH4IHZivs"
 
 
-@click.command()
+@click.group()
+def youtube():
+    """YouTube utility commands for transcription and summarization."""
+    pass
+
+
+@youtube.command()
 @click.argument("url")
 def transcribe(url):
     """Get the transcript of a YouTube video and print with timestamps"""
@@ -12,7 +18,7 @@ def transcribe(url):
     print_transcript(transcript)
 
 
-@click.command()
+@youtube.command()
 @click.argument("url")
 def summarize(url):
     """Get a summary of a YouTube video"""
@@ -55,6 +61,5 @@ def format_time(seconds: float) -> str:
     return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
 
 
-youtube = click.Group("youtube")
-youtube.add_command(transcribe)
-youtube.add_command(summarize)
+if __name__ == "__main__":
+    youtube()
