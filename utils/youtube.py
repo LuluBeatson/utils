@@ -1,10 +1,15 @@
 import click
+from urllib.parse import urlparse, parse_qs
 from youtube_transcript_api import YouTubeTranscriptApi
 
-"https://youtu.be/69bH4IHZivs"
+
+@click.group()
+def youtube():
+    """YouTube utility commands for transcription and summarization."""
+    pass
 
 
-@click.command()
+@youtube.command()
 @click.argument("url")
 def transcribe(url):
     """Get the transcript of a YouTube video and print with timestamps"""
@@ -12,7 +17,7 @@ def transcribe(url):
     print_transcript(transcript)
 
 
-@click.command()
+@youtube.command()
 @click.argument("url")
 def summarize(url):
     """Get a summary of a YouTube video"""
@@ -43,7 +48,18 @@ def summarize_transcript(transcript):
 
 
 def url_to_id(url):
-    return url.split("/")[-1]
+    """Extract the video id from a youtube url.
+
+    There are two types of youtube urls:
+    - https://www.youtube.com/watch?v=dQw4w9WgXcQ&other=params
+    - https://youtu.be/dQw4w9WgXcQ?other=params
+    """
+    parsed_url = urlparse(url)
+    if parsed_url.hostname == "youtu.be":
+        return parsed_url.path[1:]
+    elif parsed_url.hostname in ["www.youtube.com", "youtube.com"]:
+        return parse_qs(parsed_url.query).get("v", [None])[0]
+    return None
 
 
 def format_time(seconds: float) -> str:
@@ -55,6 +71,5 @@ def format_time(seconds: float) -> str:
     return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
 
 
-youtube = click.Group("youtube")
-youtube.add_command(transcribe)
-youtube.add_command(summarize)
+if __name__ == "__main__":
+    youtube()

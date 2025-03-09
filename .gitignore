@@ -18,3 +18,6 @@ ENV/
 *.swp
 .DS_Store
 .env
+
+# Default location for script outputs
+outputs/

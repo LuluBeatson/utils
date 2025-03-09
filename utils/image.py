@@ -3,7 +3,13 @@ from PIL import Image, ImageOps
 import os
 
 
-@click.command()
+@click.group()
+def image():
+    """Image utility commands."""
+    pass
+
+
+@image.command()
 @click.option("--output", default=None, help="The name of the output image")
 @click.option(
     "--columns", default=3, help="Number of images in each row in the grid", type=int
@@ -30,6 +36,7 @@ def grid(
     overwrite: bool,
     range: tuple[int, int] = None,
 ):
+    """Create a grid of images from a directory."""
     if not os.path.isdir(directory):
         raise click.BadParameter(f"Directory {directory} does not exist")
     if output is None:
@@ -62,7 +69,7 @@ def grid(
     total_height += border_size
 
     # Calculate the number of rows and columns
-    rows = -(-len(images) // columns)  # equivalent to ceil(len(images) / columns)
+    rows = -(-len(images) // columns)
     grid_width = total_width * columns + border_size
     grid_height = total_height * rows + border_size
 
@@ -88,5 +95,5 @@ def grid(
     new_img.save(output + ".png")
 
 
-image = click.Group("image")
-image.add_command(grid)
+if __name__ == "__main__":
+    image()
